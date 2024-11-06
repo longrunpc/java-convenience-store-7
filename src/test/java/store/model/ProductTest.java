@@ -38,13 +38,13 @@ public class ProductTest {
         product.sale(sellQuantity);
 
         //then
-        assertThat(product.getQuentity()).isEqualTo(10-sellQuantity);
+        assertThat(product.getQuantity()).isEqualTo(10-sellQuantity);
     }
 
     @DisplayName("상품 판매 수량 초과")
     @ParameterizedTest
     @ValueSource(ints = {11,12,13,14})
-    void sellingProductTest(int sellQuantity){
+    void sellingProductTest_QuantityExceeded(int sellQuantity){
         //given
 
         //when & then
