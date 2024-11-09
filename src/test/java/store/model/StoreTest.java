@@ -83,7 +83,7 @@ public class StoreTest {
             List<String> updatedLines = Files.readAllLines(testFile);
             assertThat(updatedLines).hasSize(17);
             assertThat(updatedLines.get(0)).isEqualTo("name,price,quantity,promotion");
-            assertThat(updatedLines.get(1)).isEqualTo("콜라,1000,7,탄산");
+            assertThat(updatedLines.get(1)).isEqualTo("콜라,1000,7,탄산2+1");
             assertThat(updatedLines.get(2)).isEqualTo("콜라,1000,10,null");
         }
 

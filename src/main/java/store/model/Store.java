@@ -5,6 +5,8 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static store.model.Promotion.promotionToString;
+
 public class Store {
     private final List<Product> products;
 
@@ -37,5 +39,26 @@ public class Store {
         String promotion = data[3];
 
         return new Product(name, price, quantity, promotion);
+    }
+
+    public void updateStore(String filePath) {
+        Path path = Paths.get(filePath);
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+            writer.write("name,price,quantity,promotion\n");
+            for (Product product : products) {
+                writer.write(formatProduct(product));
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("[ERROR] Failed to update store file.");
+        }
+    }
+
+    private String formatProduct(Product product) {
+        return String.join(",",
+                product.getName(),
+                String.valueOf(product.getPrice()),
+                String.valueOf(product.getQuantity()),
+                promotionToString(product.getPromotion())
+        ) + "\n";
     }
 }
