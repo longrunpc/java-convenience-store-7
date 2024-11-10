@@ -14,8 +14,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class StoreTest {
     Store store;
-    private static final String FILE_PATH = "src/main/resources/products.md";
-    private static final String TEST_FILE_PATH = "src/main/resources/test_products.md";
+    private static final String PRODUCTS_FILE_PATH = "src/main/resources/products.md";
+    private static final String TEST_PRODUCTS_FILE_PATH = "src/main/resources/test_products.md";
+    private static final String PROMOTIONS_FILE_PATH = "src/main/resources/promotions.md";
 
     @BeforeEach
     void setUp() {
@@ -26,7 +27,7 @@ public class StoreTest {
     @Test
     void readStoreTest_Success() throws Exception {
         // when
-        store.readStore(FILE_PATH);
+        store.readStore(PRODUCTS_FILE_PATH);
         List<Product> products = store.getProducts();
 
         // then
@@ -44,8 +45,11 @@ public class StoreTest {
     @DisplayName("전체 상품 읽어오기 실패")
     @Test
     void readStoreTest_Fail() {
+        // given
+        String invalidPath = "/restricted_area/test_products.md";
+
         // when & then
-        assertThatThrownBy(() -> store.readStore("invalid_file_path.md"))
+        assertThatThrownBy(() -> store.readStore(invalidPath))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] Failed to read store file.");
     }
@@ -57,8 +61,8 @@ public class StoreTest {
 
         @BeforeEach
         void setUp() throws IOException {
-            Path originalFile = Paths.get(FILE_PATH);
-            testFile = Paths.get(TEST_FILE_PATH);
+            Path originalFile = Paths.get(PRODUCTS_FILE_PATH);
+            testFile = Paths.get(TEST_PRODUCTS_FILE_PATH);
             Files.copy(originalFile, testFile, StandardCopyOption.REPLACE_EXISTING);
         }
 
@@ -72,12 +76,12 @@ public class StoreTest {
         @Test
         void updateStoreTest_Success() throws Exception {
             // given
-            store.readStore(TEST_FILE_PATH);
+            store.readStore(TEST_PRODUCTS_FILE_PATH);
             Product product = store.getProducts().get(0);
             product.sale(3); // 콜라 수량을 10 -> 7로 감소
 
             // when
-            store.updateStore(TEST_FILE_PATH);
+            store.updateStore(TEST_PRODUCTS_FILE_PATH);
 
             // then
             List<String> updatedLines = Files.readAllLines(testFile);
@@ -99,5 +103,42 @@ public class StoreTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] Failed to update store file.");
         }
+    }
+
+    @DisplayName("프로모션 읽어오기 성공")
+    @Test
+    void readPromotion_Success() {
+        // when
+        store.readPromotions(PROMOTIONS_FILE_PATH);
+        PromotionDetail promotionDetail = store.getPromotion(Promotion.탄산);
+
+        //then
+        assertThat(promotionDetail.getBuy()).isEqualTo(2);
+        assertThat(promotionDetail.getGet()).isEqualTo(1);
+    }
+
+    @DisplayName("프로모션 읽어오기 실패")
+    @Test
+    void readPromotion_Failure() {
+        // given
+        String invalidPath = "/restricted_area/test_promotions.md";
+
+        // when & then
+        assertThatThrownBy(() -> store.readPromotions(invalidPath))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] Failed to read promotion file.");
+    }
+
+    @DisplayName("프로모션 유효성 검증")
+    @Test
+    void promotionValidTest_Success() {
+        //given
+        // when
+        store.readPromotions(PROMOTIONS_FILE_PATH);
+        PromotionDetail promotionDetail = store.getPromotion(Promotion.탄산);
+
+        //then
+        assertThat(promotionDetail.getBuy()).isEqualTo(2);
+        assertThat(promotionDetail.getGet()).isEqualTo(1);
     }
 }
