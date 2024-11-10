@@ -1,31 +1,27 @@
 package store.model;
 
 public enum Promotion {
-    탄산, MD추천상품, 반짝할인, NONE;
+    탄산("탄산2+1"),
+    MD추천상품("MD추천상품"),
+    반짝할인("반짝할인"),
+    NONE("null");
 
-    public static Promotion fromString(String value) {
-        if (value.equals("탄산2+1")){
-            return 탄산;
-        }
-        if (value.equals("MD추천상품")){
-            return MD추천상품;
-        }
-        if (value.equals("반짝할인")){
-            return 반짝할인;
-        }
-        return NONE;
+    private final String name;
+
+    Promotion(String name) {
+        this.name = name;
     }
 
-    public static String promotionToString(Promotion promotion) {
-        if (promotion == 탄산) {
-            return "탄산2+1";
+    public String getName() {
+        return name;
+    }
+
+    public static Promotion fromName(String name) {
+        for (Promotion promotion : values()) {
+            if (promotion.name.equals(name)) {
+                return promotion;
+            }
         }
-        if (promotion == MD추천상품) {
-            return "MD추천상품";
-        }
-        if (promotion == 반짝할인) {
-            return "반짝할인";
-        }
-        return "null";
+        return NONE;
     }
 }

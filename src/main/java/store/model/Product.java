@@ -10,7 +10,7 @@ public class Product {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-        this.promotion = Promotion.fromString(promotion);
+        this.promotion = Promotion.fromName(promotion);
     }
 
     public String getName() {

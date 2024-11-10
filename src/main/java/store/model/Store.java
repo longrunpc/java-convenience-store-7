@@ -5,8 +5,6 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static store.model.Promotion.promotionToString;
-
 public class Store {
     private final List<Product> products;
 
@@ -58,7 +56,7 @@ public class Store {
                 product.getName(),
                 String.valueOf(product.getPrice()),
                 String.valueOf(product.getQuantity()),
-                promotionToString(product.getPromotion())
+                product.getPromotion().getName()
         ) + "\n";
     }
 }
