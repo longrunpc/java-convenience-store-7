@@ -28,11 +28,11 @@ public class StoreTest {
     void readStoreTest_Success() throws Exception {
         // when
         store.readStore(PRODUCTS_FILE_PATH);
-        List<Product> products = store.getProducts();
+        List<Product> products = store.getStore();
 
         // then
         assertThat(products).isNotEmpty(); // 상품 리스트가 비어 있지 않은지 확인
-        assertThat(products.size()).isEqualTo(16); // 상품 개수 확인
+        assertThat(products).hasSize(18);
 
         // 첫 번째 상품 데이터 확인
         Product firstProduct = products.get(0);
@@ -77,7 +77,7 @@ public class StoreTest {
         void updateStoreTest_Success() throws Exception {
             // given
             store.readStore(TEST_PRODUCTS_FILE_PATH);
-            Product product = store.getProducts().get(0);
+            Product product = store.getStore().get(0);
             product.sale(3); // 콜라 수량을 10 -> 7로 감소
 
             // when
@@ -85,7 +85,7 @@ public class StoreTest {
 
             // then
             List<String> updatedLines = Files.readAllLines(testFile);
-            assertThat(updatedLines).hasSize(17);
+            assertThat(updatedLines).hasSize(19);
             assertThat(updatedLines.get(0)).isEqualTo("name,price,quantity,promotion");
             assertThat(updatedLines.get(1)).isEqualTo("콜라,1000,7,탄산2+1");
             assertThat(updatedLines.get(2)).isEqualTo("콜라,1000,10,null");

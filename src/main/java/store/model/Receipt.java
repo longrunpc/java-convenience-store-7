@@ -1,11 +1,11 @@
 package store.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Receipt {
-    private final Map<String, ReceiptDetail> purchasedProducts;
-    private final Map<String, ReceiptDetail> giveaway;
+    private final List<ReceiptDetail> purchasedProducts;
+    private final List<ReceiptDetail> giveaway;
     public int totalQuantity;
     private int totalPrice;
     private int excludedPromotionPrice;
@@ -14,8 +14,8 @@ public class Receipt {
     private int finalPrice;
 
     public Receipt() {
-        this.purchasedProducts = new HashMap<>();
-        this.giveaway = new HashMap<>();
+        this.purchasedProducts = new ArrayList<>();
+        this.giveaway = new ArrayList<>();
         this.totalPrice = 0;
         this.totalQuantity = 0;
         this.eventDiscount = 0;
@@ -24,7 +24,7 @@ public class Receipt {
     }
 
     public void addPurchasedProduct(ReceiptDetail receiptDetail) {
-        purchasedProducts.put(receiptDetail.getName(), receiptDetail);
+        purchasedProducts.add(receiptDetail);
         totalPrice += (receiptDetail.getQuantity() * receiptDetail.getPrice());
         totalQuantity += receiptDetail.getQuantity();
     }
@@ -34,7 +34,7 @@ public class Receipt {
     }
 
     public void addGiveaway(ReceiptDetail receiptDetail) {
-        giveaway.put(receiptDetail.getName(), receiptDetail);
+        giveaway.add(receiptDetail);
         eventDiscount += (receiptDetail.getQuantity() * receiptDetail.getPrice());
     }
 
@@ -61,8 +61,8 @@ public class Receipt {
         return eventDiscount;
     }
 
-    public ReceiptDetail getGiveaway(String productName) {
-        return giveaway.get(productName);
+    public List<ReceiptDetail> getGiveaway() {
+        return giveaway;
     }
 
     public int getMembershipDiscount() {

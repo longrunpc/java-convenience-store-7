@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Store {
     private final List<Product> products;
@@ -17,8 +18,14 @@ public class Store {
         this.promotions = new HashMap<>();
     }
 
-    public List<Product> getProducts() {
+    public List<Product> getStore() {
         return products;
+    }
+
+    public List<Product> getProduct(String name) {
+        return products.stream()
+                .filter(product -> product.getName().equals(name))
+                .collect(Collectors.toList());
     }
 
     public PromotionDetail getPromotion(Promotion promotion) {
@@ -28,14 +35,38 @@ public class Store {
     public void readStore(String filePath) {
         Path path = Paths.get(filePath);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
+            Product lastProduct = null;
             String line = reader.readLine(); // 헤더 넘김
             while ((line = reader.readLine()) != null) {
                 Product product = parseProduct(line);
-                products.add(product);
+                checkAndAddProduct(product, lastProduct);
+                lastProduct = product;
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("[ERROR] Failed to read store file.");
         }
+    }
+
+    private void checkAndAddProduct(Product product, Product lastProduct) {
+        if (lastProduct == null) {
+            products.add(product);
+            return;
+        }
+        if (!(lastProduct.getName().equals(product.getName())) && !(lastProduct.getPromotion().equals(Promotion.NONE))) {
+            products.add(createNullPromotionProduct(lastProduct));
+            products.add(product);
+            return;
+        }
+        products.add(product);
+    }
+
+    private Product createNullPromotionProduct(Product product) {
+        return new Product(
+                product.getName(),
+                product.getPrice(),
+                0,      // 수량을 0으로 설정
+                "null"  // 프로모션을 null로 설정
+        );
     }
 
     public void readPromotions(String filePath) {
