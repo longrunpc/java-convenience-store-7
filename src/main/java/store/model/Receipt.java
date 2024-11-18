@@ -5,64 +5,70 @@ import java.util.List;
 
 public class Receipt {
     private final List<ReceiptDetail> purchasedProducts;
-    private final List<ReceiptDetail> giveaway;
-    public int totalQuantity;
+    private final List<ReceiptDetail> giveaways; // 이름 변경: 복수형으로 표현
+    private int totalQuantity;
     private int totalPrice;
     private int excludedPromotionPrice;
-    public int eventDiscount;
+    private int eventDiscount;
     private int membershipDiscount;
     private int finalPrice;
 
     public Receipt() {
         this.purchasedProducts = new ArrayList<>();
-        this.giveaway = new ArrayList<>();
+        this.giveaways = new ArrayList<>();
         this.totalPrice = 0;
         this.totalQuantity = 0;
         this.eventDiscount = 0;
         this.membershipDiscount = 0;
         this.finalPrice = 0;
+        this.excludedPromotionPrice = 0;
     }
 
     public void addPurchasedProduct(ReceiptDetail receiptDetail) {
         purchasedProducts.add(receiptDetail);
-        totalPrice += (receiptDetail.getQuantity() * receiptDetail.getPrice());
+        totalPrice += receiptDetail.getQuantity() * receiptDetail.getPrice();
         totalQuantity += receiptDetail.getQuantity();
     }
 
-    public void addExcludedPromotionPrice(ReceiptDetail receiptDetail) {
-        excludedPromotionPrice += (receiptDetail.getQuantity()*receiptDetail.getPrice());
+    public void addExcludedPromotionPrice(int price) {
+        excludedPromotionPrice += price;
     }
 
     public void addGiveaway(ReceiptDetail receiptDetail) {
-        giveaway.add(receiptDetail);
-        eventDiscount += (receiptDetail.getQuantity() * receiptDetail.getPrice());
+        giveaways.add(receiptDetail);
+        eventDiscount += receiptDetail.getQuantity() * receiptDetail.getPrice();
     }
 
     public void calculateMembershipDiscount() {
-        membershipDiscount = (int) (excludedPromotionPrice * 0.3); // 30% 계산
-        if (membershipDiscount > 8000) {
-            membershipDiscount = 8000;
-        }
+        membershipDiscount = (int) (excludedPromotionPrice * 0.3);
+        membershipDiscount = Math.min(membershipDiscount, 8000);
     }
 
     public void calculateFinalPrice() {
         finalPrice = totalPrice - eventDiscount - membershipDiscount;
+        if (finalPrice < 0) {
+            finalPrice = 0;
+        }
     }
 
-    public int getTotalQuantity(){
+    public int getTotalQuantity() {
         return totalQuantity;
     }
 
-    public int getTotalPrice(){
+    public int getTotalPrice() {
         return totalPrice;
     }
 
-    public int getEventDiscount(){
+    public int getEventDiscount() {
         return eventDiscount;
     }
 
-    public List<ReceiptDetail> getGiveaway() {
-        return giveaway;
+    public List<ReceiptDetail> getPurchasedProducts() {
+        return new ArrayList<>(purchasedProducts);
+    }
+
+    public List<ReceiptDetail> getGiveaways() {
+        return new ArrayList<>(giveaways);
     }
 
     public int getMembershipDiscount() {

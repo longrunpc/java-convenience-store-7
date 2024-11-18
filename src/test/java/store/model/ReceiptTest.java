@@ -48,7 +48,7 @@ public class ReceiptTest {
     void membershipDiscountTest() {
         //given
         ReceiptDetail receiptDetail = new ReceiptDetail("에너지바", 5, 2000);
-        receipt.addExcludedPromotionPrice(receiptDetail);
+        receipt.addExcludedPromotionPrice(receiptDetail.getQuantity() * receiptDetail.getPrice());
 
         //when
         receipt.calculateMembershipDiscount();
@@ -67,7 +67,7 @@ public class ReceiptTest {
         receipt.addPurchasedProduct(receiptDetail1);
         receipt.addPurchasedProduct(receiptDetail2);
         receipt.addGiveaway(testGiveaway);
-        receipt.addExcludedPromotionPrice(receiptDetail2);
+        receipt.addExcludedPromotionPrice(receiptDetail2.getQuantity() * receiptDetail2.getPrice());
         receipt.calculateMembershipDiscount();
 
         //when

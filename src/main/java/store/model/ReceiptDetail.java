@@ -11,6 +11,10 @@ public class ReceiptDetail {
         this.price = price;
     }
 
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
     public String getName() {
         return name;
     }
@@ -21,5 +25,9 @@ public class ReceiptDetail {
 
     public int getPrice() {
         return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }
